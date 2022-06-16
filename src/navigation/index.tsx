@@ -16,7 +16,7 @@ export default function Navigation() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{title: 'UPayment Store'}}
+          options={{title: 'UPayments Store'}}
         />
         <Stack.Screen
           name="Detail"
