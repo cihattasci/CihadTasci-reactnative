@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 
@@ -17,13 +16,27 @@ import {fetchProducts} from '../store/actions/productActions';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Category, Product} from '../data/interfaces';
+import Spinner from '../components/Spinner';
 
 export default function HomeScreen({navigation}: any) {
   const dispatch = useDispatch();
   const categories = useSelector((state: any) => state?.categoryReducer);
   const products = useSelector((state: any) => state?.getProductReducer);
+  const loading = useSelector((state: any) => state?.pendingReducer);
 
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const initialState = {
+    id: '1',
+    name: 'Electronic',
+    price: '',
+    category: '',
+    description: '',
+    avatar: '',
+    developerEmail: '',
+    createdAt: '',
+  };
+
+  const [selectedCategory, setSelectedCategory] =
+    useState<Category>(initialState);
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -31,15 +44,26 @@ export default function HomeScreen({navigation}: any) {
     fetchProducts(dispatch);
   }, []);
 
+  useEffect(() => {
+    const filteredProducts = products?.filter(
+      (product: Product) => product?.category === selectedCategory?.name,
+    );
+    setSelectedProducts(filteredProducts);
+  }, [products]);
+
   const setCategory = (category: Category) => {
-    if (+category?.id !== selectedCategory) {
+    if (category?.id !== selectedCategory?.id) {
       const filteredProducts = products?.filter(
         (product: Product) => product?.category === category?.name,
       );
       setSelectedProducts(filteredProducts);
-      setSelectedCategory(+category?.id);
+      setSelectedCategory(category);
     }
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <View style={styles.main}>
@@ -55,7 +79,7 @@ export default function HomeScreen({navigation}: any) {
                     styles.tabElementContainer,
                     {
                       backgroundColor:
-                        selectedCategory === +category?.id ? '#fff' : '#000',
+                        selectedCategory?.id === category?.id ? '#fff' : '#000',
                     },
                   ]}>
                   <Text
@@ -63,9 +87,13 @@ export default function HomeScreen({navigation}: any) {
                       styles.tabText,
                       {
                         color:
-                          selectedCategory !== +category?.id ? '#fff' : '#000',
-                        padding: selectedCategory !== +category?.id ? 12 : 15,
-                        fontSize: selectedCategory !== +category?.id ? 13 : 15,
+                          selectedCategory?.id !== category?.id
+                            ? '#fff'
+                            : '#000',
+                        padding:
+                          selectedCategory?.id !== category?.id ? 12 : 15,
+                        fontSize:
+                          selectedCategory?.id !== category?.id ? 13 : 15,
                       },
                     ]}>
                     {category.name}
@@ -76,39 +104,18 @@ export default function HomeScreen({navigation}: any) {
           })}
         </ScrollView>
       </View>
-      <View style={styles.listContainer}>
-        {selectedProducts?.map((product: Product) => {
-          // return <ProductItem product={product} />;
-          return (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Detail', {
-                  product: product,
-                })
-              }
-              key={`product_item_${product?.id}`}>
-              <View style={styles.itemContainer}>
-                <View style={styles.imageContainer}>
-                  <Image
-                    source={{uri: product?.avatar}}
-                    style={styles.image}
-                    resizeMode={'contain'}
-                  />
-                </View>
-                <View style={styles.bottomContainer}>
-                  <View style={styles.nameContainer}>
-                    <Text style={styles.text}>{product?.name}</Text>
-                  </View>
-                  <View style={styles.descriptionContainer}>
-                    <Text style={styles.text}>${product?.price}</Text>
-                    <Text style={styles.text}>{product?.id}</Text>
-                  </View>
-                </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.listContainer}>
+          {selectedProducts?.map((product: Product) => {
+            return (
+              <View key={`product_item_${product?.id}`}>
+                <ProductItem product={product} navigation={navigation} />
               </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+
       <ActionButton navigation={navigation} />
     </View>
   );
@@ -136,7 +143,8 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flexWrap: 'wrap',
-    padding: 20,
+    padding: 19,
+    flexDirection: 'row',
   },
 
   itemContainer: {

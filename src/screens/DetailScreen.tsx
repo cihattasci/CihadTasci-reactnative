@@ -62,6 +62,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 23,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: {
+      width: 0,
+      height: -25,
+    },
   },
   titleContainer: {
     padding: 20,

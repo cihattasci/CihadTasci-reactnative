@@ -10,25 +10,15 @@ const getProductReducer = (state: Product[] = [], action: Action) => {
   }
 };
 
-const setProductReducer = (
-  state: Product = {
-    id: '',
-    name: '',
-    price: 0,
-    category: '',
-    description: '',
-    avatar: '',
-    developerEmail: '',
-    createdAt: '',
-  },
-  action: Action,
-) => {
+const pendingReducer = (state: boolean = false, action: Action) => {
   switch (action.type) {
-    case actionTypes.UPLOAD_PRODUCT:
+    case actionTypes.PENDING_OFF:
+      return action.payload;
+    case actionTypes.PENDING_ON:
       return action.payload;
     default:
       return state;
   }
 };
 
-export {getProductReducer, setProductReducer};
+export {getProductReducer, pendingReducer};

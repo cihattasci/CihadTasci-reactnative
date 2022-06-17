@@ -1,10 +1,10 @@
 import {combineReducers} from 'redux';
-import {getProductReducer, setProductReducer} from './Product';
+import {getProductReducer, pendingReducer} from './Product';
 import categoryReducer from './Category';
 
 const reducers = combineReducers({
   getProductReducer,
-  setProductReducer,
+  pendingReducer,
   categoryReducer,
 });
 export default reducers;

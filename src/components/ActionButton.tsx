@@ -1,5 +1,7 @@
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import React from 'react';
+
+const {width} = Dimensions.get('window');
 
 export default function ActionButton({navigation}: any) {
   return (
@@ -13,19 +15,19 @@ export default function ActionButton({navigation}: any) {
 
 const styles = StyleSheet.create({
   actionButtonContainer: {
-    width: 50,
-    height: 50,
+    width: width * 0.12,
+    height: width * 0.12,
     backgroundColor: '#fff',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#000',
-    borderRadius: 25,
+    borderRadius: width * 0.06,
     right: 30,
     bottom: 30,
     position: 'absolute',
     zIndex: 999,
   },
   text: {
-    fontSize: 40,
+    fontSize: 35,
     color: '#000',
     textAlign: 'center',
   },
