@@ -41,7 +41,7 @@ export default function HomeScreen({navigation}: any) {
 
   useEffect(() => {
     fetchCategory(dispatch);
-    fetchProducts(dispatch);
+    fetchProducts(dispatch, navigation, false);
   }, []);
 
   useEffect(() => {

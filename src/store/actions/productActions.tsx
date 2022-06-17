@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
 import {Product} from '../../data/interfaces';
+import {Alert} from 'react-native';
 
 export const getProduct = (product: Product[]) => ({
   type: actionTypes.GET_PRODUCT,
@@ -16,7 +17,11 @@ export const pendingOff = (pending: boolean) => ({
   payload: pending,
 });
 
-export const fetchProducts = (dispatch: any) => {
+export const fetchProducts = (
+  dispatch: any,
+  navigation: any,
+  willGoBack: boolean,
+) => {
   dispatch({type: 'PENDING_ON', payload: true});
   fetch('https://62286b649fd6174ca82321f1.mockapi.io/case-study/products/', {
     method: 'GET',
@@ -29,6 +34,9 @@ export const fetchProducts = (dispatch: any) => {
     .then(response => {
       dispatch({type: 'GET_PRODUCT', payload: response});
     })
+    .then(() => {
+      willGoBack && navigation.goBack();
+    })
     .catch(() => {
       return null;
     })
@@ -37,7 +45,11 @@ export const fetchProducts = (dispatch: any) => {
     });
 };
 
-export const uploadProduct = (dispatch: any, data: Product) => {
+export const uploadProduct = (
+  dispatch: any,
+  data: Product,
+  navigation: any,
+) => {
   dispatch({type: 'PENDING_ON', payload: true});
   fetch('https://62286b649fd6174ca82321f1.mockapi.io/case-study/products', {
     method: 'POST',
@@ -48,10 +60,11 @@ export const uploadProduct = (dispatch: any, data: Product) => {
     body: JSON.stringify(data),
   })
     .then(() => {
-      fetchProducts(dispatch);
+      fetchProducts(dispatch, navigation, true);
     })
     .catch(() => {
       dispatch({type: 'PENDING_OFF', payload: false});
+      Alert.alert('Error', 'Something went wrong');
       return null;
     });
 };

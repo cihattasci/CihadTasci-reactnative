@@ -21,7 +21,7 @@ import Spinner from '../components/Spinner';
 
 const {width} = Dimensions.get('window');
 
-export default function CreateScreen() {
+export default function CreateScreen(props: any) {
   const dispatch = useDispatch();
   const categories = useSelector((state: any) => state?.categoryReducer);
   const loading = useSelector((state: any) => state?.pendingReducer);
@@ -70,12 +70,11 @@ export default function CreateScreen() {
     if (!title || !price || !selectedCategory?.name || !link) {
       return Alert.alert('Error', 'Please fill all blanks correctly');
     } else {
-      uploadProduct(dispatch, product);
+      uploadProduct(dispatch, product, props.navigation);
       setTitle('');
       setPrice(0);
       setDescription('');
       setLink('');
-      Alert.alert('Success', 'Uploaded the product successfully :)');
     }
   };
 
